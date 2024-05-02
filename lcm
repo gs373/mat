@@ -1,0 +1,44 @@
+clc
+clear all
+C=[5 1 7;6 4 6;3 2 5]
+S=[10 80 15]
+D = [70 5 30]
+[m,n]=size(C)
+if sum(S)==sum(D)
+    disp('balanced')
+else
+    disp('unbalanced')
+    if sum(S)> sum(D)
+        C(:,n+1)=zeros(m,1)
+        n=n+1
+        diff = sum(S)-sum(D)
+        D = [D diff]
+    else
+        C(m+1,:)=zeros(1,n)
+        m=m+1
+        diff = sum(D)-sum(S)
+        S = [S diff]
+    end
+end
+X = zeros(m,n)
+Icost = C
+while (any(S)~=0 || any(D)~=0);
+    min_cost = min(C(:));
+    [row,col]=find(C==min_cost);
+    y=min(S(row),D(col));
+    [alloc,index]=max(y);
+    r_pos=row(index);
+    c_pos=col(index);
+    X(r_pos,c_pos)=alloc;
+    S(r_pos)=S(r_pos)-alloc;
+    D(c_pos)=D(c_pos)-alloc;
+    C(r_pos,c_pos)=Inf;
+end
+minCost=(X.*Icost)
+cost = sum(minCost(:))
+count = nnz(X)
+if(count==(m+n-1))
+    disp('Non degenerate')
+else
+    disp('degenerate')
+end
